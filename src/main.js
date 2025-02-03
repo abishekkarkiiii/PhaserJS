@@ -58,4 +58,4 @@ const conf={
   ]
 }
 
-const game= new Phaser.Game(conf)
+const gamew= new Phaser.Game(conf)
