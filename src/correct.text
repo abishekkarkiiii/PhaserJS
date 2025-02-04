@@ -1,0 +1,89 @@
+import Phaser from "phaser";
+
+class MainScene extends Phaser.Scene {
+    constructor() {
+        super({ key: "MainScene" });
+        this.player = null;
+        this.start = false;
+        this.bullets = [];
+        this.enemies = [];
+    }
+
+    preload() {
+        this.load.image("player", "./player.png");
+        this.load.image("bg", "./background.jpg");
+    }
+
+    create() {
+        const playerSpeed = 5;
+
+        // Background Image
+        this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, "bg")
+            .setDisplaySize(this.cameras.main.width, this.cameras.main.height);
+
+        // Start Button
+        const startBtn = this.add.rectangle(300, 300, 150, 50, 0xFFFFFF).setOrigin(0.5);
+        const startText = this.add.text(300, 300, "Start Game", { fontSize: "20px", color: "#000" }).setOrigin(0.5);
+
+        // Player
+        this.player = this.add.image(100, 500, "player").setScale(0.3).setVisible(false);
+
+        startBtn.setInteractive();
+        startBtn.on("pointerdown", () => {
+            this.start = true;
+            startBtn.destroy();
+            startText.destroy();
+            this.player.setVisible(true);
+
+            // Enemy Spawn Logic
+            this.time.addEvent({
+                delay: 1500,
+                loop: true,
+                callback: () => {
+                    let enemy = this.add.rectangle(650, Phaser.Math.Between(100, 500), 40, 40, 0xFF0000);
+                    this.enemies.push(enemy);
+                },
+                callbackScope: this,
+            });
+        });
+
+        // Controls
+        this.input.keyboard.on("keydown", (event) => {
+            if (!this.start) return;
+            
+            switch (event.key.toLowerCase()) {
+                case "a": this.player.x -= playerSpeed; break;
+                case "d": this.player.x += playerSpeed; break;
+                case "w": this.player.y -= playerSpeed; break;
+                case "s": this.player.y += playerSpeed; break;
+                case "f": this.shootBullet(); break;
+            }
+        });
+    }
+
+    shootBullet() {
+        let bullet = this.add.rectangle(this.player.x + 50, this.player.y, 10, 5, 0xFFFFFF);
+        this.bullets.push(bullet);
+    }
+
+    update() {
+        this.bullets.forEach((bullet, index) => {
+            bullet.x += 10;
+            if (bullet.x > this.cameras.main.width) {
+                bullet.destroy();
+                this.bullets.splice(index, 1);
+            }
+        });
+
+        this.enemies.forEach((enemy, index) => {
+            enemy.x -= 3;
+            if (enemy.x < 0) {
+                enemy.destroy();
+                this.enemies.splice(index, 1);
+            }
+        });
+    }
+}
+
+
+export default MainScene;

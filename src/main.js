@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser, { Physics } from "phaser";
 
 import LoadingScene from "./LoadingScene";
 import MainScene from "./MainScene";
@@ -55,7 +55,13 @@ const conf={
   height:600,
   scene:[
     LoadingScene,MainScene
-  ]
+  ],
+  physics:{
+    default:'arcade',
+    arcade:{
+      debug:true // for testing
+    }
+  }
 }
 
 const gamew= new Phaser.Game(conf)
