@@ -52,7 +52,7 @@ class MainScene extends Phaser.Scene {
         this.load.image("bg","../public/background.jpg")
         this.load.image("bullet",'/bullet.png')
         this.load.image("enemy","/enemy.png")
-     
+        this.load.audio("shot","/FirstGame/public/assets/shoot.mp3")
 
         for(let i=0;i<7;i++){
             this.load.image(`walk-${i}`,`/assets/walk/tile00${i}.png`)
@@ -91,7 +91,12 @@ class MainScene extends Phaser.Scene {
         // this.add.text(200, 200, "Hello!").setOrigin(0.5, 0.5);
         // this.add.text(200, 200, "Hello!").setOrigin(1, 1);
      
-         this.Bgimage=this.add.image(0,0,"bg").setDisplaySize(this.game.config.width,this.game.config.height).setOrigin(0,0);
+        this.Bgimage=this.physics.add.image(0,0,"bg").setDisplaySize(this.game.config.width,this.game.config.height).setOrigin(0,0);
+        this.Bgimage.body.allowGravity = false;
+        this.Bgimage.body.immovable = true;
+        this.Bgimage.body.moves = false; 
+        this.Bgimage.setBodySize(6500,820);
+        this.Bgimage.setOffset(0,2600);
         this.player=this.physics.add.sprite(150,130,"player").setScale(1.5).setOrigin(0,0.5);
         const container=this.add.container(300,300);
         this.containerPlayer=this.add.container(50,200);
@@ -172,10 +177,9 @@ class MainScene extends Phaser.Scene {
                      // this.player.setOffset(50,60)
                        enemy.setBodySize(30,65);
                        enemy.setOffset(30,30);
+                       this.physics.add.collider(enemy,this.Bgimage); 
                        this.enemy.push(enemy);
-                       this.physics.add.collider(this.player,enemy,()=>{
-                        // alert('gameover')
-                       })
+                       
                     //    console.log(this.enemy)
                     },
                     callbackScope:this,
@@ -183,8 +187,8 @@ class MainScene extends Phaser.Scene {
                
             })
     
-        
        
+           
 
         // this.input.keyboard.addListener("keydown",(e)=>{
         //     if(this.start){
@@ -247,10 +251,12 @@ class MainScene extends Phaser.Scene {
                     this.player.play("walk", true);
                     this.containerPlayer.x += playerMovement;
                 } else if (e.key === " ") {
-                    this.containerPlayer.y -= playerMovement + 30;
-                    setTimeout(() => {
-                        this.containerPlayer.y += playerMovement + 30;
-                    }, 100);
+                    // this.containerPlayer.y -= playerMovement + 30;
+                    // this.containerPlayer.setAcclerationY();
+                    this.player.setVelocityY(30);
+                    // setTimeout(() => {
+                    //     this.containerPlayer.y += playerMovement + 30;
+                    // }, 100);
                 } else if (e.key.toLowerCase() === "f") {
                     if (this.start) {
                         
@@ -292,12 +298,32 @@ class MainScene extends Phaser.Scene {
         // this.rectangle.on("pointerout",(e)=>{
         //     this.rectangle.setFillStyle(0xFF0000)
         // })
-
-
-      
+       
+        this.physics.add.collider(this.player,this.Bgimage); 
+        
     }
-
+flag=true;
+   gameOver=false;
     update() {
+        // if(!this.gameOver){
+        //     this.enemy.forEach((x)=>{
+        //         this.physics.add.collider(this.player,x,()=>{
+        //             this.gameOver=true;
+        //             // alert('gameover');
+               
+        //            })
+        //     })
+        // }else{
+        //     if(this.flag){
+        //         alert("game over");
+        //         this.flag=false
+        //     }else{
+        //         location.reload(true);
+        //     }
+        //     // alert("game over");
+       
+        // }
+       
         // if (this.movingDown) {
         //     this.rectangle.y += 2;
         //     this.rectangle.x += 2;
@@ -331,6 +357,7 @@ class MainScene extends Phaser.Scene {
                     this.enemy.forEach((x)=>{
                         this.physics.add.collider(x,bullet,()=>{
                             x.destroy();
+                            bullet.destroy();
                            })
                     })
                   
@@ -353,6 +380,7 @@ class MainScene extends Phaser.Scene {
                 enemy.x -= 5;
                 if (enemy.x<0) {
                     enemy.destroy();
+                    
                     return false; // Remove from array
                 } 
                 
@@ -365,7 +393,7 @@ class MainScene extends Phaser.Scene {
 
 
 
-export default MainScene;
+export default MainScenefirst;
 
 
 

@@ -1,7 +1,7 @@
 import Phaser, { Physics } from "phaser";
 
 import LoadingScene from "./LoadingScene";
-import MainScene from "./MainScene";
+import MainScene from "./MainScence";
 
 
 //  class LoadingScene extends Phaser.Scene{
@@ -59,7 +59,11 @@ const conf={
   physics:{
     default:'arcade',
     arcade:{
-      debug:true // for testing
+      debug:true, // for testing
+      gravity:{
+        // x:10,
+        y:170
+      }
     }
   }
 }
