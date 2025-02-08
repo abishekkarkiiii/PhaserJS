@@ -452,7 +452,8 @@ class MainScene extends Phaser.Scene {
         }
         return true;
       });
-  
+      
+      this.add.arc(100, 100, 50, 0, 180, false, 0xff0000, 0.8);
       // -------------------------------
       // 3. Update Enemies
       // -------------------------------
